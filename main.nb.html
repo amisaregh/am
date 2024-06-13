@@ -11,7 +11,7 @@
 
 
 
-<title>R Notebook</title>
+<title>Project Class in Asset Management</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,37 +1746,119 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">R Notebook</h1>
+<h1 class="title toc-ignore">Project Class in Asset Management</h1>
 
 </div>
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-Notebook. When you execute code within the notebook, the results appear
-beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within
-the chunk or by placing your cursor inside it and pressing
-<em>Ctrl+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU3lzLnNldGxvY2FsZShcIkxDX1RJTUVcIiwgXCJFbmdsaXNoXCIpICNzZXQgbGFuZ3VhZ2UgZm9yIGRhdGVzIGV0Yy5cbmBgYCJ9 -->
+<pre class="r"><code>Sys.setlocale(&quot;LC_TIME&quot;, &quot;English&quot;) #set language for dates etc.</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZyBpbiBTeXMuc2V0bG9jYWxlKFwiTENfVElNRVwiLCBcIkVuZ2xpc2hcIikgOlxuICBPUyByZXBvcnRzIHJlcXVlc3QgdG8gc2V0IGxvY2FsZSB0byBcIkVuZ2xpc2hcIiBjYW5ub3QgYmUgaG9ub3JlZFxuIn0= -->
+<pre><code>Warning in Sys.setlocale(&quot;LC_TIME&quot;, &quot;English&quot;) :
+  OS reports request to set locale to &quot;English&quot; cannot be honored</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiXCJcbiJ9 -->
+<pre><code>[1] &quot;&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU3lzLnNldGVudihUWj0nVUNUJykgI3NldCB0aW1lem9uZSFcbmxpYnJhcnkodGlkeXZlcnNlKVxubGlicmFyeShnZ3Bsb3QyKVxubGlicmFyeShza2ltcilcbmxpYnJhcnkoc3RhcmdhemVyKVxubGlicmFyeShnZ3B1YnIpXG5saWJyYXJ5KEdHYWxseSlcbmxpYnJhcnkoZ2dFeHRyYSlcbmxpYnJhcnkoZ2dhbGx1dmlhbClcbmxpYnJhcnkoYnJvb20pXG5saWJyYXJ5KGx1YnJpZGF0ZSlcbmxpYnJhcnkoYmVuZm9yZC5hbmFseXNpcylcbmxpYnJhcnkoaHJicnRoZW1lcylcbmxpYnJhcnkodGlkeXF1YW50KVxubGlicmFyeShwbG90bHkpXG5saWJyYXJ5KFJjcHBSb2xsKVxubGlicmFyeShzY2FsZXMpXG5saWJyYXJ5KGNvd3Bsb3QpICNmb3IgcGxvdF9ncmlkXG5saWJyYXJ5KGdnZm9yY2UpICNlZyBmb3IgZmFjZXRfem9vbVxubGlicmFyeShjaXJjbGl6ZSkgI2ZvciBjaG9yZCBkaWFncmFtXG5saWJyYXJ5KHpvbykgI2ZvciByb2xsYXBwbHlyXG5saWJyYXJ5KGdsbW5ldClcbmxpYnJhcnkoUGVyZm9ybWFuY2VBbmFseXRpY3MpICNmb3IgU29ydGlub1JhdGlvXG5saWJyYXJ5KFZHQU0pICNmb3IgdG9iaXQgcmVncmVzc2lvblxubGlicmFyeShEZXNjVG9vbHMpXG4jcHJldmVudCBtZW1vcnkgbGltaXQgcHJvYmxlbVxubWVtb3J5LmxpbWl0KDE2MTA2KjMwMDApXG5gYGAifQ== -->
+<pre class="r"><code>Sys.setenv(TZ=&#39;UCT&#39;) #set timezone!
+library(tidyverse)
+library(ggplot2)
+library(skimr)
+library(stargazer)
+library(ggpubr)
+library(GGally)
+library(ggExtra)
+library(ggalluvial)
+library(broom)
+library(lubridate)
+library(benford.analysis)
+library(hrbrthemes)
+library(tidyquant)
+library(plotly)
+library(RcppRoll)
+library(scales)
+library(cowplot) #for plot_grid
+library(ggforce) #eg for facet_zoom
+library(circlize) #for chord diagram
+library(zoo) #for rollapplyr
+library(glmnet)
+library(PerformanceAnalytics) #for SortinoRatio
+library(VGAM) #for tobit regression
+library(DescTools)
+#prevent memory limit problem
+memory.limit(16106*3000)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogJ21lbW9yeS5saW1pdCgpJyBpcyBXaW5kb3dzLXNwZWNpZmljXG4ifQ== -->
+<pre><code>Warning: &#39;memory.limit()&#39; is Windows-specific</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEluZlxuIn0= -->
+<pre><code>[1] Inf</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3B0aW9ucyhzY2lwZW4gPSAxMDApXG5gYGAifQ== -->
+<pre class="r"><code>options(scipen = 100)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
-toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and
-output will be saved alongside it (click the <em>Preview</em> button or
-press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
-run any R code chunks. Instead, the output of the chunk when it was last
-run in the editor is displayed.</p>
+<p>Data Preparation and Cleaning</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZXMgPC0gbGlzdChcbiAgXCJob3VybHlfcHJpY2VzXzB4MGY1ZDJmYjI5ZmI3ZDNjZmVlNDQ0YTIwMDI5OGY0Njg5MDhjYzk0Mi5jc3ZcIiwgXG4gIFwiaG91cmx5X3ByaWNlc18weDFmOTg0MGE4NWQ1YUY1YmYxRDE3NjJGOTI1QkRBRGRDNDIwMUY5ODQuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDJhZjVkMmFkNzY3NDExOTFkMTVkZmU3YmY2YWM5MmQ0YmQ5MTJjYTMuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDdEMUFmQTdCNzE4ZmI4OTNkQjMwQTNhQmMwQ2ZjNjA4QWFDZmVCQjAuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDdGYzY2NTAwYzg0QTc2QWQ3ZTljOTM0MzdiRmM1QWMzM0UyRERhRTkuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDlmOGY3MmFhOTMwNGM4YjU5M2Q1NTVmMTJlZjY1ODljYzNhNTc5YTIuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDk1YUQ2MWIwYTE1MGQ3OTIxOWRDRjY0RTFFNkNjMDFmMEI2NEM0Y0UuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDIyNjBGQUM1RTU1NDJhNzczQWE0NGZCQ2ZlRGY3QzE5M2JjMkM1OTkuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDM4NDViYWRBZGU4ZTZkRkYwNDk4MjA2ODBkMUYxNGJEMzkwM2E1ZDAuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDM1MDY0MjRmOTFmZDMzMDg0NDY2ZjQwMmQ1ZDk3ZjA1ZjhlM2I0YWYuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weDUxNDkxMDc3MUFGOUNhNjU2YWY4NDBkZmY4M0U4MjY0RWNGOTg2Q0EuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGEwYjczZTFmZjBiODA5MTRhYjZmZTA0NDRlNjU4NDhjNGMzNDQ1MGIuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGJiYmJjYTZhOTAxYzkyNmYyNDBiODllYWNiNjQxZDhhZWM3YWVhZmQuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGMwMGU5NGNiNjYyYzM1MjAyODJlNmY1NzE3MjE0MDA0YTdmMjY4ODguY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGM5NDRlOTBjNjRiMmMwNzY2MmEyOTJiZTYyNDRiZGYwNWNkYTQ0YTcuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGQyNjExNGNkNmVlMjg5YWNjZjgyMzUwYzhkODQ4N2ZlZGI4YTBjMDcuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGQ4NTA5NDJlZjg4MTFmMmE4NjY2OTJhNjIzMDExYmRlNTJhNDYyYzEuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weEQ1MzNhOTQ5NzQwYmIzMzA2ZDExOUNDNzc3ZmE5MDBiQTAzNGNkNTIuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGY2MjljYmQ5NGQzNzkxYzkyNTAxNTJiZDhkZmJkZjM4MGUyYTNiOWMuY3N2XCIsXG4gIFwiaG91cmx5X3ByaWNlc18weGZmMjA4MTc3NjVjYjdmNzNkNGJkZTJlNjZlMDY3ZTU4ZDExMDk1YzIuY3N2XCJcbilcblxuIyBJbml0aWFsaXplIGFuIGVtcHR5IGxpc3QgdG8gc3RvcmUgZGF0YSBmcmFtZXNcbnByaWNlcyA8LSBsaXN0KClcblxuIyBMb29wIHRocm91Z2ggdGhlIGZpbGVzIGxpc3RcbmZvciAoZmlsZSBpbiBmaWxlcykge1xuICAjIENvbWJpbmUgdGhlIGRpcmVjdG9yeSBwYXRoIGFuZCBmaWxlIG5hbWVcbiAgcGF0aCA8LSBwYXN0ZTAoZ2V0d2QoKSxcIi9QcmljZS9cIiwgZmlsZSlcbiAgXG4gICMgUmVhZCB0aGUgQ1NWIGZpbGVcbiAgZGF0YWZyYW1lIDwtIHJlYWQuY3N2KHBhdGgpXG4gIFxuICAjIFNvcnQgZGF0YSBhbmQgZm9ybWF0IHRpbWVzdGFtcFxuICBkYXRhZnJhbWUgPC0gZGF0YWZyYW1lICU+JSBcbiAgbXV0YXRlKGhvdXJfdGltZXN0YW1wID0gYXMuUE9TSVhjdChob3VyX3RpbWVzdGFtcCwgZm9ybWF0ID0gXCIlWS0lbS0lZCAlSDolTVwiKSkgJT4lIFxuICBhcnJhbmdlKGhvdXJfdGltZXN0YW1wKSBcbiAgXG4gICMgRXh0cmFjdCB0aGUgbmFtZSBmcm9tIHRoZSBmaWxlIG5hbWUgYW5kIHByZWZpeCBpdCB3aXRoIGRmX1xuICBkYXRhZnJhbWUubmFtZSA8LSBwYXN0ZTAoXCJkZl9cIiwgZ3N1YihcImhvdXJseV9wcmljZXNffFxcXFwuY3N2XCIsIFwiXCIsIGZpbGUpKVxuICBcbiAgIyBTdG9yZSB0aGUgZGF0YSBmcmFtZSBpbiB0aGUgbGlzdCB3aXRoIGEgbmFtZVxuICBwcmljZXNbW2RhdGFmcmFtZS5uYW1lXV0gPC0gZGF0YWZyYW1lXG59XG5gYGAifQ== -->
+<pre class="r"><code>files &lt;- list(
+  &quot;hourly_prices_0x0f5d2fb29fb7d3cfee444a200298f468908cc942.csv&quot;, 
+  &quot;hourly_prices_0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.csv&quot;,
+  &quot;hourly_prices_0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3.csv&quot;,
+  &quot;hourly_prices_0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0.csv&quot;,
+  &quot;hourly_prices_0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9.csv&quot;,
+  &quot;hourly_prices_0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2.csv&quot;,
+  &quot;hourly_prices_0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE.csv&quot;,
+  &quot;hourly_prices_0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599.csv&quot;,
+  &quot;hourly_prices_0x3845badAde8e6dFF049820680d1F14bD3903a5d0.csv&quot;,
+  &quot;hourly_prices_0x3506424f91fd33084466f402d5d97f05f8e3b4af.csv&quot;,
+  &quot;hourly_prices_0x514910771AF9Ca656af840dff83E8264EcF986CA.csv&quot;,
+  &quot;hourly_prices_0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b.csv&quot;,
+  &quot;hourly_prices_0xbbbbca6a901c926f240b89eacb641d8aec7aeafd.csv&quot;,
+  &quot;hourly_prices_0xc00e94cb662c3520282e6f5717214004a7f26888.csv&quot;,
+  &quot;hourly_prices_0xc944e90c64b2c07662a292be6244bdf05cda44a7.csv&quot;,
+  &quot;hourly_prices_0xd26114cd6ee289accf82350c8d8487fedb8a0c07.csv&quot;,
+  &quot;hourly_prices_0xd850942ef8811f2a866692a623011bde52a462c1.csv&quot;,
+  &quot;hourly_prices_0xD533a949740bb3306d119CC777fa900bA034cd52.csv&quot;,
+  &quot;hourly_prices_0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c.csv&quot;,
+  &quot;hourly_prices_0xff20817765cb7f73d4bde2e66e067e58d11095c2.csv&quot;
+)
+
+# Initialize an empty list to store data frames
+prices &lt;- list()
+
+# Loop through the files list
+for (file in files) {
+  # Combine the directory path and file name
+  path &lt;- paste0(getwd(),&quot;/Price/&quot;, file)
+  
+  # Read the CSV file
+  dataframe &lt;- read.csv(path)
+  
+  # Sort data and format timestamp
+  dataframe &lt;- dataframe %&gt;% 
+  mutate(hour_timestamp = as.POSIXct(hour_timestamp, format = &quot;%Y-%m-%d %H:%M&quot;)) %&gt;% 
+  arrange(hour_timestamp) 
+  
+  # Extract the name from the file name and prefix it with df_
+  dataframe.name &lt;- paste0(&quot;df_&quot;, gsub(&quot;hourly_prices_|\\.csv&quot;, &quot;&quot;, file))
+  
+  # Store the data frame in the list with a name
+  prices[[dataframe.name]] &lt;- dataframe
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ3RybCtTaGlmdCtFbnRlciouIAoKYGBge3J9CnBsb3QoY2FycykKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ3RybCtBbHQrSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4KClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4K</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCBDbGFzcyBpbiBBc3NldCBNYW5hZ2VtZW50IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7cn0KU3lzLnNldGxvY2FsZSgiTENfVElNRSIsICJFbmdsaXNoIikgI3NldCBsYW5ndWFnZSBmb3IgZGF0ZXMgZXRjLgpTeXMuc2V0ZW52KFRaPSdVQ1QnKSAjc2V0IHRpbWV6b25lIQpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KHNraW1yKQpsaWJyYXJ5KHN0YXJnYXplcikKbGlicmFyeShnZ3B1YnIpCmxpYnJhcnkoR0dhbGx5KQpsaWJyYXJ5KGdnRXh0cmEpCmxpYnJhcnkoZ2dhbGx1dmlhbCkKbGlicmFyeShicm9vbSkKbGlicmFyeShsdWJyaWRhdGUpCmxpYnJhcnkoYmVuZm9yZC5hbmFseXNpcykKbGlicmFyeShocmJydGhlbWVzKQpsaWJyYXJ5KHRpZHlxdWFudCkKbGlicmFyeShwbG90bHkpCmxpYnJhcnkoUmNwcFJvbGwpCmxpYnJhcnkoc2NhbGVzKQpsaWJyYXJ5KGNvd3Bsb3QpICNmb3IgcGxvdF9ncmlkCmxpYnJhcnkoZ2dmb3JjZSkgI2VnIGZvciBmYWNldF96b29tCmxpYnJhcnkoY2lyY2xpemUpICNmb3IgY2hvcmQgZGlhZ3JhbQpsaWJyYXJ5KHpvbykgI2ZvciByb2xsYXBwbHlyCmxpYnJhcnkoZ2xtbmV0KQpsaWJyYXJ5KFBlcmZvcm1hbmNlQW5hbHl0aWNzKSAjZm9yIFNvcnRpbm9SYXRpbwpsaWJyYXJ5KFZHQU0pICNmb3IgdG9iaXQgcmVncmVzc2lvbgpsaWJyYXJ5KERlc2NUb29scykKI3ByZXZlbnQgbWVtb3J5IGxpbWl0IHByb2JsZW0KbWVtb3J5LmxpbWl0KDE2MTA2KjMwMDApCm9wdGlvbnMoc2NpcGVuID0gMTAwKQpgYGAKCgpEYXRhIFByZXBhcmF0aW9uIGFuZCBDbGVhbmluZwpgYGB7cn0KZmlsZXMgPC0gbGlzdCgKICAiaG91cmx5X3ByaWNlc18weDBmNWQyZmIyOWZiN2QzY2ZlZTQ0NGEyMDAyOThmNDY4OTA4Y2M5NDIuY3N2IiwgCiAgImhvdXJseV9wcmljZXNfMHgxZjk4NDBhODVkNWFGNWJmMUQxNzYyRjkyNUJEQURkQzQyMDFGOTg0LmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHgyYWY1ZDJhZDc2NzQxMTkxZDE1ZGZlN2JmNmFjOTJkNGJkOTEyY2EzLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHg3RDFBZkE3QjcxOGZiODkzZEIzMEEzYUJjMENmYzYwOEFhQ2ZlQkIwLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHg3RmM2NjUwMGM4NEE3NkFkN2U5YzkzNDM3YkZjNUFjMzNFMkREYUU5LmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHg5ZjhmNzJhYTkzMDRjOGI1OTNkNTU1ZjEyZWY2NTg5Y2MzYTU3OWEyLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHg5NWFENjFiMGExNTBkNzkyMTlkQ0Y2NEUxRTZDYzAxZjBCNjRDNGNFLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHgyMjYwRkFDNUU1NTQyYTc3M0FhNDRmQkNmZURmN0MxOTNiYzJDNTk5LmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHgzODQ1YmFkQWRlOGU2ZEZGMDQ5ODIwNjgwZDFGMTRiRDM5MDNhNWQwLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHgzNTA2NDI0ZjkxZmQzMzA4NDQ2NmY0MDJkNWQ5N2YwNWY4ZTNiNGFmLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHg1MTQ5MTA3NzFBRjlDYTY1NmFmODQwZGZmODNFODI2NEVjRjk4NkNBLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhhMGI3M2UxZmYwYjgwOTE0YWI2ZmUwNDQ0ZTY1ODQ4YzRjMzQ0NTBiLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhiYmJiY2E2YTkwMWM5MjZmMjQwYjg5ZWFjYjY0MWQ4YWVjN2FlYWZkLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhjMDBlOTRjYjY2MmMzNTIwMjgyZTZmNTcxNzIxNDAwNGE3ZjI2ODg4LmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhjOTQ0ZTkwYzY0YjJjMDc2NjJhMjkyYmU2MjQ0YmRmMDVjZGE0NGE3LmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhkMjYxMTRjZDZlZTI4OWFjY2Y4MjM1MGM4ZDg0ODdmZWRiOGEwYzA3LmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhkODUwOTQyZWY4ODExZjJhODY2NjkyYTYyMzAxMWJkZTUyYTQ2MmMxLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhENTMzYTk0OTc0MGJiMzMwNmQxMTlDQzc3N2ZhOTAwYkEwMzRjZDUyLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhmNjI5Y2JkOTRkMzc5MWM5MjUwMTUyYmQ4ZGZiZGYzODBlMmEzYjljLmNzdiIsCiAgImhvdXJseV9wcmljZXNfMHhmZjIwODE3NzY1Y2I3ZjczZDRiZGUyZTY2ZTA2N2U1OGQxMTA5NWMyLmNzdiIKKQoKIyBJbml0aWFsaXplIGFuIGVtcHR5IGxpc3QgdG8gc3RvcmUgZGF0YSBmcmFtZXMKcHJpY2VzIDwtIGxpc3QoKQoKIyBMb29wIHRocm91Z2ggdGhlIGZpbGVzIGxpc3QKZm9yIChmaWxlIGluIGZpbGVzKSB7CiAgIyBDb21iaW5lIHRoZSBkaXJlY3RvcnkgcGF0aCBhbmQgZmlsZSBuYW1lCiAgcGF0aCA8LSBwYXN0ZTAoZ2V0d2QoKSwiL1ByaWNlLyIsIGZpbGUpCiAgCiAgIyBSZWFkIHRoZSBDU1YgZmlsZQogIGRhdGFmcmFtZSA8LSByZWFkLmNzdihwYXRoKQogIAogICMgU29ydCBkYXRhIGFuZCBmb3JtYXQgdGltZXN0YW1wCiAgZGF0YWZyYW1lIDwtIGRhdGFmcmFtZSAlPiUgCiAgbXV0YXRlKGhvdXJfdGltZXN0YW1wID0gYXMuUE9TSVhjdChob3VyX3RpbWVzdGFtcCwgZm9ybWF0ID0gIiVZLSVtLSVkICVIOiVNIikpICU+JSAKICBhcnJhbmdlKGhvdXJfdGltZXN0YW1wKSAKICAKICAjIEV4dHJhY3QgdGhlIG5hbWUgZnJvbSB0aGUgZmlsZSBuYW1lIGFuZCBwcmVmaXggaXQgd2l0aCBkZl8KICBkYXRhZnJhbWUubmFtZSA8LSBwYXN0ZTAoImRmXyIsIGdzdWIoImhvdXJseV9wcmljZXNffFxcLmNzdiIsICIiLCBmaWxlKSkKICAKICAjIFN0b3JlIHRoZSBkYXRhIGZyYW1lIGluIHRoZSBsaXN0IHdpdGggYSBuYW1lCiAgcHJpY2VzW1tkYXRhZnJhbWUubmFtZV1dIDwtIGRhdGFmcmFtZQp9CmBgYAoK</div>
 
 
 

@@ -1,18 +1,86 @@
 ---
-title: "R Notebook"
+title: "Project Class in Asset Management"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
 ```{r}
-plot(cars)
+Sys.setlocale("LC_TIME", "English") #set language for dates etc.
+Sys.setenv(TZ='UCT') #set timezone!
+library(tidyverse)
+library(ggplot2)
+library(skimr)
+library(stargazer)
+library(ggpubr)
+library(GGally)
+library(ggExtra)
+library(ggalluvial)
+library(broom)
+library(lubridate)
+library(benford.analysis)
+library(hrbrthemes)
+library(tidyquant)
+library(plotly)
+library(RcppRoll)
+library(scales)
+library(cowplot) #for plot_grid
+library(ggforce) #eg for facet_zoom
+library(circlize) #for chord diagram
+library(zoo) #for rollapplyr
+library(glmnet)
+library(PerformanceAnalytics) #for SortinoRatio
+library(VGAM) #for tobit regression
+library(DescTools)
+#prevent memory limit problem
+memory.limit(16106*3000)
+options(scipen = 100)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+Data Preparation and Cleaning
+```{r}
+files <- list(
+  "hourly_prices_0x0f5d2fb29fb7d3cfee444a200298f468908cc942.csv", 
+  "hourly_prices_0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.csv",
+  "hourly_prices_0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3.csv",
+  "hourly_prices_0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0.csv",
+  "hourly_prices_0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9.csv",
+  "hourly_prices_0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2.csv",
+  "hourly_prices_0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE.csv",
+  "hourly_prices_0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599.csv",
+  "hourly_prices_0x3845badAde8e6dFF049820680d1F14bD3903a5d0.csv",
+  "hourly_prices_0x3506424f91fd33084466f402d5d97f05f8e3b4af.csv",
+  "hourly_prices_0x514910771AF9Ca656af840dff83E8264EcF986CA.csv",
+  "hourly_prices_0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b.csv",
+  "hourly_prices_0xbbbbca6a901c926f240b89eacb641d8aec7aeafd.csv",
+  "hourly_prices_0xc00e94cb662c3520282e6f5717214004a7f26888.csv",
+  "hourly_prices_0xc944e90c64b2c07662a292be6244bdf05cda44a7.csv",
+  "hourly_prices_0xd26114cd6ee289accf82350c8d8487fedb8a0c07.csv",
+  "hourly_prices_0xd850942ef8811f2a866692a623011bde52a462c1.csv",
+  "hourly_prices_0xD533a949740bb3306d119CC777fa900bA034cd52.csv",
+  "hourly_prices_0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c.csv",
+  "hourly_prices_0xff20817765cb7f73d4bde2e66e067e58d11095c2.csv"
+)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# Initialize an empty list to store data frames
+prices <- list()
+
+# Loop through the files list
+for (file in files) {
+  # Combine the directory path and file name
+  path <- paste0(getwd(),"/Price/", file)
+
+  # Read the CSV file
+  dataframe <- read.csv(path)
+  
+  # Sort data and format timestamp
+  dataframe <- dataframe %>% 
+  mutate(hour_timestamp = as.POSIXct(hour_timestamp, format = "%Y-%m-%d %H:%M")) %>% 
+  arrange(hour_timestamp) 
+  
+  # Extract the name from the file name and prefix it with df_
+  dataframe.name <- paste0("df_", gsub("hourly_prices_|\\.csv", "", file))
+  
+  # Store the data frame in the list with a name
+  prices[[dataframe.name]] <- dataframe
+}
+```
