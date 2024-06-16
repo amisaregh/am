@@ -52,6 +52,14 @@ library(DescTools)
 ```
 
 
+Calculate Returns
+```{r}
+calculate.returns <- function(df) {
+  df <- df %>% mutate(returns = close_price / lag(close_price) - 1)
+  return(df)
+}
+```
+
 Data Preparation and Cleaning
 ```{r}
 files <- list(
@@ -96,8 +104,15 @@ for (file in files) {
   # Extract the name from the file name and prefix it with df_
   dataframe.name <- paste0("df_", gsub("hourly_prices_|\\.csv", "", file))
   
+  # Calculate returns
+  dataframe <- calculate.returns(dataframe)
+  
   # Store the data frame in the list with a name
   prices[[dataframe.name]] <- dataframe
 }
 ```
 
+
+```{r}
+View(prices$df_0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0)
+```
