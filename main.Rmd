@@ -3,9 +3,28 @@ title: "Project Class in Asset Management"
 output: html_notebook
 ---
 
+Set language for dates and timezone
 ```{r}
-Sys.setlocale("LC_TIME", "English") #set language for dates etc.
-Sys.setenv(TZ='UCT') #set timezone!
+#set language for dates
+os = Sys.info()["sysname"]
+
+if (os == "Linux") {
+  Sys.setlocale("LC_TIME", "en_US.UTF-8")
+} else {
+  Sys.setlocale("LC_TIME", "English")
+  
+  #prevent memory limit problem
+  memory.limit(16106*3000)
+}
+
+#set timezone!
+Sys.setenv(TZ='UCT')
+options(scipen = 100)
+```
+
+
+Load libraries
+```{r}
 library(tidyverse)
 library(ggplot2)
 library(skimr)
@@ -30,9 +49,6 @@ library(glmnet)
 library(PerformanceAnalytics) #for SortinoRatio
 library(VGAM) #for tobit regression
 library(DescTools)
-#prevent memory limit problem
-memory.limit(16106*3000)
-options(scipen = 100)
 ```
 
 
@@ -84,3 +100,4 @@ for (file in files) {
   prices[[dataframe.name]] <- dataframe
 }
 ```
+
