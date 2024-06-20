@@ -3,67 +3,36 @@ title: "Project Class in Asset Management"
 output: html_notebook
 ---
 
-Set language for dates and timezone
-```{r}
-#set language for dates
-os = Sys.info()["sysname"]
+```{r locale specification}
+# set language for dates
+os <- Sys.info()["sysname"]
 
 if (os == "Linux") {
   Sys.setlocale("LC_TIME", "en_US.UTF-8")
 } else {
   Sys.setlocale("LC_TIME", "English")
-  
+
   #prevent memory limit problem
-  memory.limit(16106*3000)
+  memory.limit(16106 * 3000)
 }
 
-#set timezone!
-Sys.setenv(TZ='UCT')
+# set timezone!
+Sys.setenv(TZ = 'UCT')
 options(scipen = 100)
 ```
 
-
-Load libraries
-```{r}
-library(tidyverse)
+```{r import statements}
+library(dplyr)
 library(ggplot2)
-library(skimr)
-library(stargazer)
-library(ggpubr)
-library(GGally)
-library(ggExtra)
-library(ggalluvial)
-library(broom)
-library(lubridate)
-library(benford.analysis)
-library(hrbrthemes)
-library(tidyquant)
-library(plotly)
-library(RcppRoll)
-library(scales)
-library(cowplot) #for plot_grid
-library(ggforce) #eg for facet_zoom
-library(circlize) #for chord diagram
-library(zoo) #for rollapplyr
-library(glmnet)
-library(PerformanceAnalytics) #for SortinoRatio
-library(VGAM) #for tobit regression
-library(DescTools)
+library(TTR)
+library(quantmod)
+library(zoo)
+library(corrplot)
 ```
 
-
-Calculate Returns
-```{r}
-calculate.returns <- function(df) {
-  df <- df %>% mutate(returns = close_price / lag(close_price) - 1)
-  return(df)
-}
-```
-
-Data Preparation and Cleaning
-```{r}
+```{r files}
 files <- list(
-  "hourly_prices_0x0f5d2fb29fb7d3cfee444a200298f468908cc942.csv", 
+  "hourly_prices_0x0f5d2fb29fb7d3cfee444a200298f468908cc942.csv",
   "hourly_prices_0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.csv",
   "hourly_prices_0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3.csv",
   "hourly_prices_0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0.csv",
@@ -84,35 +53,145 @@ files <- list(
   "hourly_prices_0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c.csv",
   "hourly_prices_0xff20817765cb7f73d4bde2e66e067e58d11095c2.csv"
 )
+```
 
-# Initialize an empty list to store data frames
-prices <- list()
+```{r data preparation and cleaning}
+read.data <- function(file) {
+    # Combine the directory path and file name
+    base_dir <- getwd()
+    path <- paste0(base_dir, "/Price/", file)
 
-# Loop through the files list
-for (file in files) {
-  # Combine the directory path and file name
-  path <- paste0(getwd(),"/Price/", file)
+    # Read the CSV file
+    data <- read.csv(path)
+    data <- na.omit(data)
 
-  # Read the CSV file
-  dataframe <- read.csv(path)
-  
-  # Sort data and format timestamp
-  dataframe <- dataframe %>% 
-  mutate(hour_timestamp = as.POSIXct(hour_timestamp, format = "%Y-%m-%d %H:%M")) %>% 
-  arrange(hour_timestamp) 
-  
-  # Extract the name from the file name and prefix it with df_
-  dataframe.name <- paste0("df_", gsub("hourly_prices_|\\.csv", "", file))
-  
-  # Calculate returns
-  dataframe <- calculate.returns(dataframe)
-  
-  # Store the data frame in the list with a name
-  prices[[dataframe.name]] <- dataframe
+    # Sort data and format timestamp
+    data <- data %>% 
+    mutate(hour_timestamp = as.POSIXct(hour_timestamp, format = "%Y-%m-%d %H:%M")) %>% 
+    arrange(hour_timestamp)
+
+    data
 }
 ```
 
+```{r feature engineering}
+feature.engineering <- function(data) {
+  data <- data %>% 
+    mutate(return = close_price / lag(close_price) - 1) %>%                 # Asset Return
+    mutate(rsi = RSI(close_price, n = 14)) %>%                              # Relative Strength Index (RSI)
+    mutate(sma = SMA(close_price, n = 10)) %>%                              # Simple Moving Average
+    mutate(ema = EMA(close_price, n= 10)) %>%                               # Exponential Moving Average
+    mutate(macd = MACD(close_price, nFast = 12, nSlow = 26, nSig = 9)) %>%  # Moving Average Convergence Divergence
+    mutate(bbands = BBands(HLC(data), n = 20, sd = 2))                      # Bollinger Bands
+    
+  data
+}
+```
 
-```{r}
-View(prices$df_0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0)
+```{r summary statistics}
+summary.statistics <- function(data) {
+  summary(data)
+}
+```
+
+```{r plot closing price over time}
+plot.closing.price <- function(data, color = "blue") {
+  ggplot(data, aes(x = hour_timestamp, y = close_price)) +
+    geom_line(color = color) +
+    labs(title = "Closing Price Over Time", x = "Date", y = "Price") +
+    theme_minimal()
+}
+```
+
+```{r plot moving average}
+plot.moving.average <- function(data) {
+  ggplot(data, aes(x = hour_timestamp)) +
+    geom_line(aes(y = close_price, colour = "Price")) +
+    geom_line(aes(y = sma, colour = "SMA")) +
+    geom_line(aes(y = ema, colour = "EMA")) +
+    labs(title = "Closing Price with Moving Avaerages", x = "Date", y = "Price") +
+    scale_color_manual(values = c("Price" = "blue", "SMA" = "red", "EMA" = "green")) +
+    theme_minimal()
+}
+```
+
+```{r plot daily return}
+plot.daily.return <- function(data, color = "blue") {
+  ggplot(data, aes(x = hour_timestamp, y = return)) +
+    geom_line(color = color)+ 
+    labs(title = "Return Over Time", x = "Date", y = "Return") +
+    theme_minimal()
+}
+```
+
+```{r volatility analysis}
+volatility.analysis <- function(data, n = 30) {
+  sigma_data <- data %>% 
+    mutate(sigma = runSD(close_price, n = n) * sqrt(30))
+  
+  ggplot(sigma_data, aes(x = hour_timestamp, y = sigma)) + 
+    geom_line(color = "red") +
+    labs(title = paste0(n, "-Day Rolling Price Volatility"), x = "Date", y = "Volatility") +
+    theme_minimal()
+}
+```
+
+```{r plot rsi}
+# Plot Relative Strength Index (RSI)
+plot.rsi <- function(data) {
+  # Plot Close Price
+  p1 <- ggplot(data, aes(x = hour_timestamp, y = close_price)) +
+    geom_line(color = "blue", size = 1) +
+    labs(title = "Closing Price", y = "Price", x = "Date") +
+    theme_minimal()
+
+  # Plot the RSI
+  p2 <- ggplot(data, aes(x = hour_timestamp, y = rsi)) +
+    geom_line(color = "blue", size = 1) +
+    labs(title = "BTC-USD RSI", y = "RSI", x = "Date") +
+    geom_hline(yintercept = 70, linetype = "dashed", color = "red") +
+    geom_hline(yintercept = 30, linetype = "dashed", color = "green") +
+    theme_minimal()
+  
+  # Display plots
+  print(p1)
+  print(p2)
+}
+```
+
+```{r plot macd}
+# Plot MACD 
+plot.macd <- function(data) {
+  macd.line = data$macd[, "macd"]
+  macd.signal = data$macd[, "signal"]
+  macd.hist = macd.line - macd.signal
+  
+  # Plot the closing prices
+  p1 <- ggplot(data, aes(x = hour_timestamp, y = close_price)) +
+    geom_line(color = "blue") +
+    labs(title = "Closing Price", y = "Price", x = NULL) +
+    theme_minimal()
+  
+  # Plot the MACD Line and Signal Line
+  p2 <- ggplot(data, aes(x = hour_timestamp)) +
+    geom_line(aes(y = macd.line, color = "MACD Line"), linewidth = 1) +
+    geom_line(aes(y = macd.signal, color = "Signal Line"), size = 1) +
+    scale_color_manual(values = c("MACD Line" = "blue", "Signal Line" = "red")) +
+    labs(title = "MACD Line and Signal Line", y = "MACD", x = NULL) +
+    theme_minimal() +
+    theme(legend.position = "top")
+  
+  # Plot the MACD Histogram
+  p3 <- ggplot(data, aes(x = hour_timestamp, y = macd.hist)) +
+    geom_bar(stat = "identity", aes(fill = macd.hist >= 0), position = "identity") +
+    scale_fill_manual(values = c("TRUE" = "green", "FALSE" = "red")) +
+    labs(title = "MACD Histogram", y = "Histogram", x = "Date") +
+    theme_minimal() +
+    theme(legend.position = "none")
+  
+  # Plot Graphs
+  print(p1)
+  print(p2)
+  print(p3)
+}
 ```
